@@ -29,16 +29,21 @@ internal class Program
         var game = new StringReader(_game.Replace("Game ", ""));
         Dictionary<string, int> subset;
         var id = GetID(game);
+        var max = new Dictionary<string, int>();
+        int power = 1;
 
         while((subset = GetSubset(game)).Count > 0)
         {
             foreach(var cube in subset) 
             {
-                if(Bag[cube.Key] < cube.Value) return 0;
+                max.TryGetValue(cube.Key, out int count);
+                max[cube.Key] = Math.Max(count, cube.Value);
             }
         }
-        
-        return int.Parse(id);
+
+        foreach(var cube in max)
+           power *= cube.Value;
+        return power;
     }
 
     private static string GetID(StringReader game)
