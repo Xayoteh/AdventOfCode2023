@@ -12,15 +12,7 @@ internal class Program
             string? card;
             while((card = file.ReadLine()) != null) 
             {
-                var (number, matches) = EvaluateCard(card);
-                
-                cardCount.TryGetValue(number, out int count);
-                cardCount[number] = count + 1;
-                for(int i = 1; i <= matches; ++i) 
-                {
-                    cardCount.TryGetValue(number + i, out count);
-                    cardCount[number + i] = count + cardCount[number];
-                }
+                EvaluateCard(card, cardCount);
             }
         }
         foreach(var count in cardCount)
@@ -30,7 +22,7 @@ internal class Program
         Console.WriteLine(sum);
     }
 
-    private static (int number, int matches) EvaluateCard(string _card) 
+    private static void EvaluateCard(string _card, Dictionary<int, int> cardsCount) 
     {
         var card = new StringReader(_card.Replace("Card ", ""));
         var cardNumber = int.Parse(GetNumber(card));
@@ -43,7 +35,13 @@ internal class Program
             if(myNumbers.Contains(number)) ++matches;
         }
 
-        return (cardNumber, matches);
+        cardsCount.TryGetValue(cardNumber, out int cardCount);
+        cardsCount[cardNumber] = ++cardCount;
+        for(int i = 1; i <= matches; ++i) 
+        {
+            cardsCount.TryGetValue(cardNumber + i, out int count);
+            cardsCount[cardNumber + i] = count + cardCount;
+        }
     }
 
     private static string GetNumber(StringReader card)
