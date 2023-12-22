@@ -27,7 +27,7 @@ internal class Program
         {
             for(int col = 0; col < engine[row].Length; ++col)
             {
-                if(engine[row][col] != '.' && !char.IsDigit(engine[row][col]))
+                if(engine[row][col] == '*')
                     sum += GetParts(engine, row, col);
             }
         }
@@ -37,7 +37,8 @@ internal class Program
 
     private static int GetParts(List<char[]> engine, int row, int col)
     {
-        int parts = 0;
+        int parts = 1;
+        int count = 0;
 
         for(int i = row - 1; i <= row + 1; i++) 
         {
@@ -48,12 +49,13 @@ internal class Program
                 if(j < 0 || j >= engine[row].Length) continue;
                 if(GetNumber(engine[i], j, out int num))
                 {
-                    parts += num;
+                    if(count++ == 2) return 0;
+                    parts *= num;
                 }
             }
         }
 
-        return parts;
+        return count == 2 ? parts : 0;
     }
 
     private static bool GetNumber(char[] line, int col, out int number) 
